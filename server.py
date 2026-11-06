@@ -1,0 +1,37 @@
+'''
+This module deploys an Emotion Detector on the server at port 5000"
+'''
+from flask import Flask, render_template, request
+
+from EmotionDetection.emotion_detection import emotion_detector
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    '''
+    This method renders the index template for the homepage.
+    '''
+    return render_template("index.html")
+
+@app.route("/emotionDetector")
+def emotion_detection():
+    '''
+    This method passes the text from the browser to the emotion_detector
+    internal module and returns the emotion scores along with the
+    dominant emotion.
+    '''
+    statement = request.args.get("textToAnalyze")
+    emotions = emotion_detector(statement)
+    if emotions["dominant_emotion"] is None:
+        return "Invalid text! Please try again!"
+    return f"""For the given statement, the system response is
+            'anger': {emotions['anger']}, 
+           'disgust': {emotions['disgust']}, 
+           'fear': {emotions['fear']}, 
+           'joy': {emotions['joy']} and 
+           'sadness': {emotions['sadness']}. 
+           The dominant emotion is {emotions['dominant_emotion']}."""
+
+if __name__ == "__main__":
+    app.run()
