@@ -12,6 +12,8 @@ def index():
 def emotion_detection():
     statement = request.args.get("textToAnalyze")
     emotions = emotion_detector(statement)
+    if emotions["dominant_emotion"] is None:
+        return "Invalid text! Please try again!"
     return f"For the given statement, the system response is 'anger': {emotions['anger']}, 'disgust': {emotions['disgust']}, 'fear': {emotions['fear']}, 'joy': {emotions['joy']} and 'sadness': {emotions['sadness']}. The dominant emotion is {emotions['dominant_emotion']}."
 
 if __name__ == "__main__":
